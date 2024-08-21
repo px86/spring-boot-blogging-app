@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+  <head>
+    <title th:text="|${user.firstName} ${user.lastName}|">John Doe</title>
+  </head>
+  <body>
+    <section>
+      <div th:text="${user.username}">jdoe1</div>
+      <div th:text="${user.firstName}">John</div>
+      <div th:text="${user.lastName}">Doe</div>
+      <div th:text="${user.email}">john.doe@email.com</div>
+      <div th:text="${user.role}">ROLE</div>
+    </section>
+  </body>
+</html>

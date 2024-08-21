@@ -1,9 +1,9 @@
 package io.github.px86.springbootbloggingapp.controller;
 
+import io.github.px86.springbootbloggingapp.model.Role;
 import io.github.px86.springbootbloggingapp.model.User;
 import io.github.px86.springbootbloggingapp.service.UserService;
 import jakarta.validation.Valid;
-import java.util.Collections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -39,7 +39,7 @@ public class SignUpController {
     }
 
     user.setPassword(this.passwordEncoder.encode(user.getPassword()));
-    user.setRoles(Collections.emptySet()); // Fixme
+    user.setRole(Role.STANDARD);
 
     this.userService.save(user);
 

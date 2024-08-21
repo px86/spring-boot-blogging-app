@@ -2,19 +2,16 @@ package io.github.px86.springbootbloggingapp.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Set;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -39,12 +36,8 @@ public class User implements UserDetails {
   @Column(unique = true)
   private String email;
 
-  @ManyToMany(fetch = FetchType.LAZY)
-  @JoinTable(
-      name = "user_role",
-      joinColumns = {@JoinColumn(name = "user_id")},
-      inverseJoinColumns = {@JoinColumn(name = "role_id")})
-  private Set<Role> roles;
+  @Enumerated(EnumType.STRING)
+  private Role role;
 
   public User() {}
 
@@ -98,12 +91,12 @@ public class User implements UserDetails {
     this.email = email;
   }
 
-  public Set<Role> getRoles() {
-    return roles;
+  public Role getRole() {
+    return this.role;
   }
 
-  public void setRoles(Set<Role> roles) {
-    this.roles = roles;
+  public void setRole(Role role) {
+    this.role = role;
   }
 
   @Override
