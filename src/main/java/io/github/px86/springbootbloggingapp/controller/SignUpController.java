@@ -1,6 +1,6 @@
 package io.github.px86.springbootbloggingapp.controller;
 
-import io.github.px86.springbootbloggingapp.model.User;
+import io.github.px86.springbootbloggingapp.model.UserCreationDTO;
 import io.github.px86.springbootbloggingapp.service.UserSignUpService;
 import io.github.px86.springbootbloggingapp.service.exception.EmailAlreadyRegisteredException;
 import io.github.px86.springbootbloggingapp.service.exception.UsernameNotAvailableException;
@@ -22,16 +22,14 @@ public class SignUpController {
 
   @GetMapping("/signup")
   public String signup(Model model) {
-    User user = new User();
-    model.addAttribute("user", user);
-
+    model.addAttribute("user", new UserCreationDTO());
     return "signup";
   }
 
   @PostMapping(path = "/signup", consumes = "application/x-www-form-urlencoded")
-  public ResponseEntity<String> createUser(@ModelAttribute @Valid User user) {
+  public ResponseEntity<String> createUser(@ModelAttribute @Valid UserCreationDTO userCreationDTO) {
     try {
-      this.userSignUpService.registerNewUser(user);
+      this.userSignUpService.registerNewUser(userCreationDTO);
 
       HttpHeaders headers = new HttpHeaders();
       headers.set("HX-Retarget", ".wrapper");

@@ -2,6 +2,7 @@ package io.github.px86.springbootbloggingapp.service;
 
 import io.github.px86.springbootbloggingapp.model.Role;
 import io.github.px86.springbootbloggingapp.model.User;
+import io.github.px86.springbootbloggingapp.model.UserCreationDTO;
 import io.github.px86.springbootbloggingapp.model.UserStatus;
 import io.github.px86.springbootbloggingapp.service.exception.EmailAlreadyRegisteredException;
 import io.github.px86.springbootbloggingapp.service.exception.UsernameNotAvailableException;
@@ -16,19 +17,24 @@ public class UserSignUpService {
   @Autowired private PasswordEncoder passwordEncoder;
   @Autowired private EmailService emailService;
 
-  public void registerNewUser(User user)
+  public void registerNewUser(UserCreationDTO userCreationDTO)
       throws UsernameNotAvailableException, EmailAlreadyRegisteredException {
 
-    if (this.userService.existsByUsername(user.getUsername())) {
+    if (this.userService.existsByUsername(userCreationDTO.getUsername())) {
 
       throw new UsernameNotAvailableException("Username is already taken!");
 
-    } else if (this.userService.existsByEmail(user.getEmail())) {
+    } else if (this.userService.existsByEmail(userCreationDTO.getEmail())) {
 
       throw new EmailAlreadyRegisteredException("Email is already registered!");
     }
 
-    user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+    User user = new User();
+    user.setUsername(userCreationDTO.getUsername());
+    user.setPassword(this.passwordEncoder.encode(userCreationDTO.getPassword()));
+    user.setEmail(userCreationDTO.getEmail());
+    user.setFirstName(userCreationDTO.getFirstName());
+    user.setLastName(userCreationDTO.getLastName());
     user.setRole(Role.STANDARD);
     user.setStatus(UserStatus.UNVERIFIED);
 
