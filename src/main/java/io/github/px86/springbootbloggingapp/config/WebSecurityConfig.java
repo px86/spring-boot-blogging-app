@@ -19,11 +19,20 @@ public class WebSecurityConfig {
     http.authorizeHttpRequests(
             (requests) ->
                 requests
-                    .requestMatchers("/", "/home", "/signup")
+                    .requestMatchers(
+                        "/",
+                        "/home",
+                        "/favicon.ico",
+                        "/signup",
+                        "/signin",
+                        "/error",
+                        "/css/*",
+                        "/js/*",
+                        "/img/*")
                     .permitAll()
                     .anyRequest()
                     .authenticated())
-        .formLogin((form) -> form.loginPage("/login").permitAll())
+        .formLogin((form) -> form.loginPage("/signin").permitAll())
         .logout((logout) -> logout.permitAll());
 
     return http.build();

@@ -39,6 +39,9 @@ public class User implements UserDetails {
   @Enumerated(EnumType.STRING)
   private Role role;
 
+  @Enumerated(EnumType.STRING)
+  private UserStatus status;
+
   public User() {}
 
   public Long getId() {
@@ -97,6 +100,18 @@ public class User implements UserDetails {
 
   public void setRole(Role role) {
     this.role = role;
+  }
+
+  public UserStatus getStatus() {
+    return status;
+  }
+
+  public void setStatus(UserStatus status) {
+    this.status = status;
+  }
+
+  public boolean isActive() {
+    return this.status == UserStatus.ACTIVE;
   }
 
   @Override

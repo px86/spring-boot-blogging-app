@@ -24,8 +24,8 @@ public class SpringBootBloggingApplication {
     return "hello";
   }
 
-  @GetMapping("/login")
+  @GetMapping("/signin")
   public String loginPage(Model model) {
-    return "login";
+    return "signin";
   }
 }

@@ -1,11 +1,14 @@
 package io.github.px86.springbootbloggingapp.controller;
 
-import io.github.px86.springbootbloggingapp.model.Role;
 import io.github.px86.springbootbloggingapp.model.User;
-import io.github.px86.springbootbloggingapp.service.UserService;
+import io.github.px86.springbootbloggingapp.service.UserSignUpService;
+import io.github.px86.springbootbloggingapp.service.exception.EmailAlreadyRegisteredException;
+import io.github.px86.springbootbloggingapp.service.exception.UsernameNotAvailableException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,8 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class SignUpController {
 
-  @Autowired private UserService userService;
-  @Autowired private PasswordEncoder passwordEncoder;
+  @Autowired private UserSignUpService userSignUpService;
 
   @GetMapping("/signup")
   public String signup(Model model) {
@@ -27,22 +29,24 @@ public class SignUpController {
   }
 
   @PostMapping(path = "/signup", consumes = "application/x-www-form-urlencoded")
-  public String createUser(@ModelAttribute @Valid User user, Model model) {
-    if (this.userService.existsByUsername(user.getUsername())) {
-      // model.addAttribute("alert", "username taken!");
-      return "redirect:/signup";
+  public ResponseEntity<String> createUser(@ModelAttribute @Valid User user) {
+    try {
+      this.userSignUpService.registerNewUser(user);
 
-    } else if (this.userService.existsByEmail(user.getEmail())) {
+      HttpHeaders headers = new HttpHeaders();
+      headers.set("HX-Retarget", ".wrapper");
 
-      // model.addAttribute("alert", "another user alreay exists with given email address!");
-      return "redirect:/signup";
+      String html =
+          """
+          <h2>Email verification pending!</h2>
+          <p>Please check you inbox and verify your email to complete the registration process.</p>
+          <p>Thank You!</p>
+          """;
+
+      return new ResponseEntity<String>(html, headers, HttpStatus.CREATED);
+
+    } catch (UsernameNotAvailableException | EmailAlreadyRegisteredException e) {
+      return new ResponseEntity<String>(e.getMessage(), null, HttpStatus.OK);
     }
-
-    user.setPassword(this.passwordEncoder.encode(user.getPassword()));
-    user.setRole(Role.STANDARD);
-
-    this.userService.save(user);
-
-    return "redirect:/login";
   }
 }
