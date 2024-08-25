@@ -1,0 +1,4 @@
+#+TITLE: spring-boot-blogging-app
+#+AUTHOR: Pushkar Raj
+
+Dynamic, server side rendered (SSR), website using Spring Boot, JPA, Thymeleaf and HTMX. _Currently in development._
