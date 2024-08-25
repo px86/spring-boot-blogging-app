@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,7 +25,9 @@ public class User implements UserDetails {
   @Column(name = "user_id")
   private Long id;
 
-  @NotBlank private String username;
+  @NotBlank
+  @Column(unique = true)
+  private String username;
 
   @NotBlank private String password;
 
@@ -41,6 +44,9 @@ public class User implements UserDetails {
 
   @Enumerated(EnumType.STRING)
   private UserStatus status;
+
+  @Column(name = "created_at", columnDefinition = "TIMESTAMP WITH TIME ZONE", updatable = false)
+  private OffsetDateTime createdAt;
 
   public User() {}
 
@@ -114,8 +120,36 @@ public class User implements UserDetails {
     return this.status == UserStatus.ACTIVE;
   }
 
+  public OffsetDateTime getCreatedAt() {
+    return createdAt;
+  }
+
+  public void setCreatedAt(OffsetDateTime createdAt) {
+    this.createdAt = createdAt;
+  }
+
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return Collections.emptyList();
+  }
+
+  @Override
+  public boolean isAccountNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isAccountNonLocked() {
+    return this.status != UserStatus.LOCKED;
+  }
+
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isEnabled() {
+    return this.status == UserStatus.ACTIVE;
   }
 }

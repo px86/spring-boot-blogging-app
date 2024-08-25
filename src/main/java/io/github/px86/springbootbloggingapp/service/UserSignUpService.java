@@ -6,6 +6,9 @@ import io.github.px86.springbootbloggingapp.model.UserCreationDTO;
 import io.github.px86.springbootbloggingapp.model.UserStatus;
 import io.github.px86.springbootbloggingapp.service.exception.EmailAlreadyRegisteredException;
 import io.github.px86.springbootbloggingapp.service.exception.UsernameNotAvailableException;
+
+import java.time.OffsetDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -37,6 +40,7 @@ public class UserSignUpService {
     user.setLastName(userCreationDTO.getLastName());
     user.setRole(Role.STANDARD);
     user.setStatus(UserStatus.UNVERIFIED);
+    user.setCreatedAt(OffsetDateTime.now());
 
     this.userService.save(user);
 
